@@ -68,6 +68,7 @@ assert.deepEqual(ineligibility({ online: true, eligibility: { restricted: ['SMU 
 assert.deepEqual(ineligibility({ online: false, location: 'Basel, Switzerland' }, {}, now), ['In person: Basel, Switzerland']);
 assert.deepEqual(ineligibility({ online: false, location: 'Basel' }, { onlineOnly: false }, now), []);
 assert.deepEqual(ineligibility({ online: false, location: 'Online, from anywhere' }, {}, now), [], 'online variants count as online');
+assert.deepEqual(ineligibility({ online: false, location: 'Meadowlands Exposition Center + Online' }, {}, now), [], 'hybrid events can be entered online');
 const longNames = { online: true, eligibility: { countries_excluded: ['Iran Islamic Republic of', "Korea Democratic People's Republic of", 'Syrian Arab Republic'] } };
 assert.deepEqual(ineligibility(longNames, { country: 'Iran' }, now), ['Not open in Iran']);
 assert.deepEqual(ineligibility(longNames, { country: 'North Korea' }, now), ['Not open in North Korea']);

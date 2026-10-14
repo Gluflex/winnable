@@ -87,7 +87,7 @@ export function ineligibility(h, profile, now = new Date()) {
   const level = studentLevel(p);
   if (h.deadline && new Date(h.deadline) < now) out.push('Closed');
   if (h.invite_only) out.push('Invite only');
-  const online = h.online || /^\s*(online|virtual|remote)\b/i.test(h.location || '');
+  const online = h.online || /\b(online|virtual|remote)\b/i.test(h.location || '');  // hybrids too: "Expo Center + Online"
   if (!online && p.onlineOnly !== false) out.push(`In person: ${h.location}`);
   if (e.min_age >= 18 && p.adult === false) out.push(`${e.min_age}+ only`);
   if (e.max_age != null && e.max_age <= 19 && p.adult === true) out.push(`Ages ${e.min_age ?? 13} to ${e.max_age} only`);
