@@ -289,7 +289,7 @@ def main():
             "prize_total_listed": money(h.get("prize_amount") or "")[0],
             "first_seen": seen.setdefault(str(h["id"]), today),
         }
-        rec["online"] = rec["location"].strip().lower() == "online"
+        rec["online"] = bool(re.match(r"\s*(online|virtual|remote)\b", rec["location"], re.I))
         try:
             page = get(h["url"])
             rec["eligibility"] = parse_eligibility(page)

@@ -96,7 +96,9 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 .closes span { font-size: 13px; color: var(--ink-2); }
 .closes.urgent b, .closes.urgent span { color: var(--urgent); }
 
-.filters .cal { margin-left: auto; border-style: dashed; }
+.filters .sort { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.filters .sort select { font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 1.5px solid var(--ink); border-radius: 99px; padding: 6px 12px; }
+.filters .cal { border-style: dashed; }
 
 /* opening soon: same timetable, quieter, dates instead of odds */
 .soon { margin-top: 44px; }
@@ -134,7 +136,7 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 .linkish { font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
 /* panel: quiet white, the receipt for each number */
-.scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); z-index: 20; }
+.scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .12); z-index: 20; }
 .panel {
   position: fixed; z-index: 30; top: 0; right: 0; bottom: 0; width: min(460px, 100%); overflow-y: auto;
   background: var(--panel); color: var(--panel-ink); padding: 26px 26px 40px;
@@ -162,6 +164,7 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 .prizes { margin-top: 10px; }
 .prizes div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--panel-rule); font-size: 15px; }
 .prizes .noncash { color: var(--panel-muted); }
+.pnote { display: block; margin-top: 2px; font-size: 12.5px; color: var(--panel-muted); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .chips span { padding: 4px 10px; border-radius: 99px; border: 1px solid var(--panel-rule); font-size: 13px; }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 28px; }
@@ -190,6 +193,8 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
   .row > .closes { grid-area: closes; align-self: start; }
   .row > .pe { grid-area: money; text-align: left; font-size: 14px; }
   .row > .cash { grid-area: cash; font-size: 14px; }
+  .row > .pe:not(:empty)::after { content: ' per entry'; font-size: 12px; font-weight: 500; color: var(--ink-2); }
+  .row > .cash:not(.nocash)::after { content: ' cash'; font-size: 12px; font-weight: 500; color: var(--ink-2); }
   .odds b { font-size: 28px; }
   .panel { width: 100%; }
 }

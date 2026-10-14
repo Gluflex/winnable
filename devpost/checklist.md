@@ -30,7 +30,7 @@ Build mode: fast
   Learner check: Check that the biggest prize does not automatically rank first, and that the reason makes sense.
   Commit: `Calibrated odds and ranking`
 
-- [ ] **3. Your profile decides what you can enter, with reasons**
+- [x] **3. Your profile decides what you can enter, with reasons**
   Becomes usable: The About you panel (country, 18+, student, online only) re-ranks the board live and moves ineligible hackathons to "Not for you" with their reason.
   Why now: Eligibility turns a ranked list into a personal one; it needs the ranking from slice 2.
   PRD ref: `prd.md > Eligibility checks`, `prd.md > States and Boundaries`
@@ -40,7 +40,7 @@ Build mode: fast
   Learner check: Set your real profile and confirm the Not for you reasons.
   Commit: `Profile-based eligibility`
 
-- [ ] **4. Open a hackathon to see why it ranks where it does**
+- [x] **4. Open a hackathon to see why it ranks where it does**
   Becomes usable: Detail view with the odds arithmetic, prizes split into cash and non-cash, eligibility ticks, themes; and the How the odds work sheet with the calibration chart.
   Why now: Trust in the number is what makes the board usable; needs slices 2 and 3.
   PRD ref: `prd.md > Screens and Layout`, `prd.md > Odds and expected cash`
@@ -50,7 +50,7 @@ Build mode: fast
   Learner check: Open the top row and read the explanation aloud; does it convince you?
   Commit: `Detail view and odds explainer`
 
-- [ ] **5. Your GitHub repos mark the hackathons that fit you**
+- [x] **5. Your GitHub repos mark the hackathons that fit you**
   Becomes usable: Typing a GitHub username marks matching hackathons and names the matching repos in the detail view.
   Why now: Personal relevance on top of a working ranked board.
   PRD ref: `prd.md > GitHub match`
@@ -60,7 +60,7 @@ Build mode: fast
   Learner check: Enter your username and judge whether the matches are sensible.
   Commit: `GitHub theme matching`
 
-- [ ] **6. Deadlines go into your calendar and new or urgent hackathons stand out**
+- [x] **6. Deadlines go into your calendar and new or urgent hackathons stand out**
   Becomes usable: Add to calendar per hackathon and Top 5 to calendar; New and Closing this week filters; new markers since the last visit.
   Why now: Turns the board into a weekly habit (the core loop).
   PRD ref: `prd.md > Calendar`, `prd.md > The Core Journey` (steps 6 and 7)
@@ -82,7 +82,7 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 3 (agent self-check with screenshots; Leandro's own look pending)
+- [x] Early usable behavior explored — after slices 3 to 6: agent click-through with screenshots on desktop light, dark and phone; fixes applied (open count on first visit, lighter overlay, phone labels for per-entry and cash)
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
@@ -102,6 +102,9 @@ Reflection: not started
 Activity mode: not started
 
 ## Revisions
+
+- Slices 3 to 6 committed together — the about-you panel, detail view, GitHub match and calendar modules were written while the first collector run was blocked for 30 minutes; each is covered by its own test file (test_rank, test_ics_github) and all were verified together by the browser click-through (desktop light and dark, phone) before the one commit.
+- Online detection accepts 'Online, from anywhere' and similar — exact matching on 'Online' marked an online hackathon as in person.
 
 - Upcoming hackathons get their own "Opening soon" section without odds — 130 of 179 had not opened yet; their registrant counts are still tiny, so odds would have been misleadingly good, and their pages carry no deadline (the API's submission period text is used instead).
 - Eligibility model widened (university vs high-school students, age ranges, team required, US only, member-only events kept as restrictions) — the real "Who can participate" lists contained eleven line types, not the four planned; treating unknown restrictions as blocking keeps "eligible" trustworthy.

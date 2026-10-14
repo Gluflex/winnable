@@ -67,6 +67,7 @@ assert.deepEqual(ineligibility({ online: true, eligibility: { team_min: 2 } }, {
 assert.deepEqual(ineligibility({ online: true, eligibility: { restricted: ['SMU BIA members'] } }, {}, now), ['SMU BIA members']);
 assert.deepEqual(ineligibility({ online: false, location: 'Basel, Switzerland' }, {}, now), ['In person: Basel, Switzerland']);
 assert.deepEqual(ineligibility({ online: false, location: 'Basel' }, { onlineOnly: false }, now), []);
+assert.deepEqual(ineligibility({ online: false, location: 'Online, from anywhere' }, {}, now), [], 'online variants count as online');
 assert.deepEqual(ineligibility({ online: true, eligibility: { countries_only: ['United States'] } }, { country: 'Netherlands' }, now),
   ['Only United States']);
 
