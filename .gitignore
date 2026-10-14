@@ -6,3 +6,5 @@ node_modules/
 collector.log
 scratch/
 __pycache__/
+docs/screens/
+verify.log
