@@ -70,7 +70,7 @@ Build mode: fast
   Learner check: Import the Top 5 file into your calendar.
   Commit: `Calendar export and filters`
 
-- [ ] **7. It refreshes itself every day and is ready to publish**
+- [x] **7. It refreshes itself every day and is ready to publish**
   Becomes usable: A GitHub Actions workflow runs the collector daily and commits fresh data; README, MIT licence, Pages entry point.
   Why now: Last, because it only packages what already works.
   PRD ref: `prd.md > What We're Building`
