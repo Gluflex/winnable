@@ -1,5 +1,5 @@
 // Winnable board: loads the daily data file and renders the timetable.
-import { cashPrizes, daysLeft } from './rank.js';
+import { odds, daysLeft, isUpcoming, SORTS } from './rank.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -25,13 +25,15 @@ function closes(h) {
   return `<div class="closes ${cal <= 1 ? 'urgent' : ''}"><b>${day}</b><span>${rel}</span></div>`;
 }
 
-function row(h) {
-  const cash = cashPrizes(h, DATA.rates).reduce((s, p) => s + (p.usd ?? 0) * (p.winners || 1), 0);
+function row(r) {
+  const h = r.h;
+  const cash = r.totalCash;
+  const oddsCell = r.oneIn ? `<div class="odds"><small>1 in</small><b>${r.oneIn.toLocaleString('en-US')}</b></div>` : '<div class="odds none"><b>no cash</b></div>';
   return `<div class="row" role="row">
-    <div class="odds none"><b>?</b></div>
+    ${oddsCell}
     <div class="what"><span class="name">${esc(h.title)}</span>
       <span class="meta"><span>${h.registrants.toLocaleString('en-US')} registered</span>${h.online ? '' : `<span>${esc(h.location)}</span>`}</span></div>
-    <div class="num pe"></div>
+    <div class="num pe money">${r.slots ? usd(r.ev) : ''}</div>
     <div class="num cash money big">${cash ? usd(cash) : 'no cash'}</div>
     ${closes(h)}
   </div>`;
@@ -39,10 +41,11 @@ function row(h) {
 
 async function boot() {
   DATA = await fetch('../data/hackathons.json').then((r) => r.json());
-  const list = DATA.hackathons.filter((h) => daysLeft(h) == null || daysLeft(h) > 0)
-    .sort((a, b) => (daysLeft(a) ?? 1e9) - (daysLeft(b) ?? 1e9));
+  const list = DATA.hackathons.filter((h) => (daysLeft(h) == null || daysLeft(h) > 0) && !isUpcoming(h))
+    .map((h) => ({ h, ...odds(h, DATA.calibration, DATA.rates) }))
+    .sort(SORTS.odds);
   $('#rows').innerHTML = list.map(row).join('');
-  $('#summary').innerHTML = `${list.length} open hackathons on Devpost today.`;
+  $('#summary').innerHTML = `${list.length} open hackathons on Devpost today, ranked by your odds of winning cash.`;
   $('#dataNote').textContent = `Data from Devpost, ${new Date(DATA.generated).toLocaleString('en-GB')}.`;
 }
 boot();

@@ -20,7 +20,7 @@ Build mode: fast
   Learner check: Open the board and compare three rows with their Devpost pages.
   Commit: `Collect Devpost hackathons and list them`
 
-- [ ] **2. Every hackathon carries calibrated odds and expected cash, and the board is ranked by them**
+- [x] **2. Every hackathon carries calibrated odds and expected cash, and the board is ranked by them**
   Becomes usable: Rows show "1 in N" odds and expected cash per entry, ordered by expected cash.
   Why now: This is the unique kernel; everything else is presentation around it.
   PRD ref: `prd.md > Odds and expected cash`, `prd.md > The board`
@@ -105,6 +105,9 @@ Activity mode: not started
 
 - Upcoming hackathons get their own "Opening soon" section without odds — 130 of 179 had not opened yet; their registrant counts are still tiny, so odds would have been misleadingly good, and their pages carry no deadline (the API's submission period text is used instead).
 - Eligibility model widened (university vs high-school students, age ranges, team required, US only, member-only events kept as restrictions) — the real "Who can participate" lists contained eleven line types, not the four planned; treating unknown restrictions as blocking keeps "eligible" trustworthy.
+- Default order is best odds, with expected cash and closing date as alternatives — ordering by expected cash put a USD 1,000,000 competition first, contradicting the board's own promise; best odds also surfaces hackathons with more prizes than expected entries.
+- Registrants are projected to the deadline by the elapsed share of the submission period (floor 15 %) — a hackathon that opened today ranked first on four registrants.
+- Prize money read from prize titles or descriptions when organisers skip Devpost's prize field (69 prizes), counted once; "in cash" prizes whose title names credits count only the cash remainder; participation prizes (50+ winners or titled as such) are excluded — the first data showed a USD 2,000 prize counted as USD 40,000, a USD 9,117 "cash" pool that was USD 88 of cash, and 300 participation awards turning odds into 1 in 1.
 - Collector runs four requests in parallel and saves hackathon data before calibrating — sequential calibration took 12 minutes per 20 data points because many finished hackathons have hidden galleries.
 
 - Look and feel moved from "racing form on cream paper with a monospace for figures" to "Swiss departure poster, black on signal yellow, one grotesque" — the design review before slice 1's UI found the first direction matched three of the most common generated-design defaults (cream paper, hairline broadsheet, monospace data labels).

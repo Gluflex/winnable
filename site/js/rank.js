@@ -12,23 +12,41 @@ export function expectedSubmissions(registrants, calib) {
   return Math.max(1, Math.min(reg, est));
 }
 
+// A prize every participant gets is not a win: "Participation", "every participant", or 50+ winners
+export const isParticipation = (p) => /particip|everyone|every (?:team|submission)|all (?:teams|participants|submissions)/i.test(p.title || '') || (p.winners || 1) >= 50;
+
 // Cash prizes converted to USD with the day's rates (USD per unit of currency)
 export function cashPrizes(h, rates) {
   return (h.prizes || [])
-    .filter((p) => p.cash && p.amount > 0)
+    .filter((p) => p.cash && p.amount > 0 && !isParticipation(p))
     .map((p) => {
       const rate = rates?.[p.currency] ?? (p.currency === 'USD' ? 1 : null);
       return { ...p, usd: rate == null ? null : p.amount * rate };
     });
 }
 
-export function odds(h, calib, rates) {
+// Registrations keep coming until the deadline. Project the final field linearly from
+// the share of the submission period already elapsed (at least 15 %, so a hackathon
+// that opened today counts its field as at most 6.7 times today's).
+export function projectedRegistrants(h, now = new Date()) {
+  const reg = h.registrants || 0;
+  if (!h.starts || !h.deadline) return reg;
+  const start = new Date(h.starts), end = new Date(h.deadline);
+  if (!(end > start)) return reg;
+  const f = Math.min(1, Math.max(0.15, (now - start) / (end - start)));
+  return reg / f;
+}
+
+export function odds(h, calib, rates, now = new Date()) {
   const cash = cashPrizes(h, rates).filter((p) => p.usd != null);
   const slots = cash.reduce((s, p) => s + (p.winners || 1), 0);
-  const totalCash = cash.reduce((s, p) => s + p.usd * (p.winners || 1), 0);
-  const subs = expectedSubmissions(h.registrants, calib);
+  // Amounts read from free prize text count once: "$2,000 and $100 each to 20 people" must not become 20 x $2,000
+  const totalCash = cash.reduce((s, p) => s + p.usd * (p.inferred ? 1 : p.winners || 1), 0);
+  const projected = projectedRegistrants(h, now);
+  const subs = expectedSubmissions(projected, calib);
   const pAny = slots ? Math.min(1, slots / subs) : 0;
   return {
+    projected,
     subs,
     slots,
     totalCash,
@@ -83,16 +101,23 @@ export const isUpcoming = (h, now = new Date()) => h.open_state === 'upcoming' |
 
 // Everything the board needs: open and eligible by expected cash, then by deadline;
 // upcoming ones by start date, without odds; blocked ones with their reasons
-export function rankAll(data, profile, now = new Date()) {
+// Sort orders the board offers. Best odds first; ties go to the bigger expected cash.
+export const SORTS = {
+  odds: (a, b) => (a.oneIn ?? 1e12) - (b.oneIn ?? 1e12) || b.ev - a.ev,
+  ev: (a, b) => b.ev - a.ev || (a.days ?? 1e9) - (b.days ?? 1e9),
+  deadline: (a, b) => (a.days ?? 1e9) - (b.days ?? 1e9),
+};
+
+export function rankAll(data, profile, now = new Date(), sort = 'odds') {
   const rows = data.hackathons.map((h) => {
-    const o = odds(h, data.calibration, data.rates);
+    const o = odds(h, data.calibration, data.rates, now);
     return { h, ...o, reasons: ineligibility(h, profile, now), days: daysLeft(h, now), upcoming: isUpcoming(h, now) };
   }).filter((r) => r.days == null || r.days > -1);
-  const byValue = (a, b) => b.ev - a.ev || (a.days ?? 1e9) - (b.days ?? 1e9);
+  const by = SORTS[sort] || SORTS.odds;
   const byStart = (a, b) => new Date(a.h.starts || a.h.deadline || 0) - new Date(b.h.starts || b.h.deadline || 0);
   return {
-    eligible: rows.filter((r) => !r.reasons.length && !r.upcoming).sort(byValue),
+    eligible: rows.filter((r) => !r.reasons.length && !r.upcoming).sort(by),
     upcoming: rows.filter((r) => !r.reasons.length && r.upcoming).sort(byStart),
-    blocked: rows.filter((r) => r.reasons.length).sort(byValue),
+    blocked: rows.filter((r) => r.reasons.length).sort(SORTS.ev),
   };
 }

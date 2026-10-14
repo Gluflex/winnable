@@ -188,10 +188,22 @@ def parse_prizes(page):
                 source = dtext
             if amount:
                 cash, inferred = not NONCASH.search(source), True
+        note = None
+        if cash and not inferred and NONCASH.search(title):
+            # Devpost says "in cash", the title says "$5,000 in credits + ...": only the remainder is cash
+            t_amount, _ = amount_in(title)
+            if t_amount:
+                rest = max(0.0, amount - t_amount)
+                note = f"Mostly {NONCASH.search(title).group(0).lower()}: {rest:,.0f} of {amount:,.0f} is cash"
+                amount, cash = rest, rest > 0
+            else:
+                note = f"Title mentions {NONCASH.search(title).group(0).lower()}"
+        elif cash and NONCASH.search(dtext):
+            note = f"Prize text mentions {NONCASH.search(dtext).group(0).lower()}"
         w = re.search(r"(\d+)\s*winners?", text(chunk))
         prizes.append({"title": title, "value": vtext or (f"{cur} {amount:,.0f} (from prize text)" if amount else ""),
                        "desc": dtext, "amount": amount, "currency": cur, "cash": bool(cash), "inferred": inferred,
-                       "winners": int(w.group(1)) if w else 1})
+                       "note": note, "winners": int(w.group(1)) if w else 1})
     return prizes
 
 
@@ -271,7 +283,7 @@ def main():
         rec = {
             "id": h["id"], "title": html.unescape(h["title"]).strip(), "url": h["url"],
             "org": h.get("organization_name"), "themes": [t["name"] for t in h.get("themes", [])],
-            "location": (h.get("displayed_location") or {}).get("location") or "Online",
+            "location": re.sub(r"\s+,", ",", (h.get("displayed_location") or {}).get("location") or "Online"),
             "registrants": h.get("registrations_count") or 0, "open_state": h.get("open_state"),
             "invite_only": bool(h.get("invite_only")), "thumbnail": h.get("thumbnail_url"),
             "prize_total_listed": money(h.get("prize_amount") or "")[0],
