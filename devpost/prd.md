@@ -26,7 +26,7 @@ One page, three layers:
 - **How the odds work**: a sheet with the calibration chart (registrants against submissions for the finished hackathons used) and the formula in plain words.
 
 ## Look and Feel
-Racing form meets field instrument (`scope.md > Inspiration & Identity`): warm paper background, near-black ink, one money-green accent, a muted red only for "not eligible". Big tabular numerals for the odds, a monospace face for every figure, a grotesque for words. Hairline rules between rows, no card shadows, no gradients, no emoji, no confetti. Dense like a race card but with generous row height so a phone works. Dark mode follows the system setting. Copy is short, plain and slightly dry ("1 in 4,212. Big prize, bigger crowd.").
+A departure board for prize money (`scope.md > Inspiration & Identity`, refined during spec): the yellow Swiss railway timetable poster, black type on signal yellow, deadlines read like departures, red only for "closes within 48 hours", ineligible rows greyed. One grotesque typeface with big tabular numerals for the odds. Thin timetable rules between rows, no card shadows, no gradients, no emoji, no confetti. Dense like a race card but with generous row height so a phone works. Dark mode follows the system setting. Copy is short, plain and slightly dry ("1 in 4,212. Big prize, bigger crowd.").
 
 ## Features and Behavior
 
@@ -54,7 +54,10 @@ Racing form meets field instrument (`scope.md > Inspiration & Identity`): warm p
   - [ ] "How the odds work" shows the calibration data and how many finished hackathons it uses.
 
 ### Eligibility checks
-Checks against the profile, from each hackathon's structured "Who can participate" block: minimum age, countries excluded or the only countries allowed, students only, invite only, and in-person location (in-person events count as not for you while "Online only" is on, which is the default).
+Checks against the profile, from each hackathon's structured "Who can participate" block: age limits (minimum and maximum), countries excluded or the only countries allowed, college or high-school students only, team required, invite only, member-only restrictions (shown verbatim and treated as blocking), and in-person location (in-person events count as not for you while "Online only" is on, which is the default). The profile asks: country, 18 or older, student (no, university, high school), able to bring a team, online only, GitHub username.
+
+### Opening soon
+Hackathons that have not opened yet appear in their own section with dates and prizes but no odds, because their registrant counts are still a fraction of the final field.
 
 ### GitHub match
 With a username, the board fetches the builder's public repositories once, reads their languages, topics and descriptions, and marks hackathons whose themes fit, naming the matching repos in the detail view. A match never changes the odds.

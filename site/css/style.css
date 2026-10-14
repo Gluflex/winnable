@@ -1,0 +1,198 @@
+/* Winnable. A departure board for prize money: black type on signal yellow,
+   one grotesque, red only for deadlines inside 48 hours. */
+:root {
+  --board: #ffd200;
+  --ink: #000000;
+  --ink-2: rgba(0, 0, 0, .72);
+  --muted: rgba(0, 0, 0, .55);
+  --rule: rgba(0, 0, 0, .25);
+  --rule-2: rgba(0, 0, 0, .12);
+  --urgent: #d0021b;
+  --off: #6e6a5e;
+  --panel: #ffffff;
+  --panel-ink: #000000;
+  --panel-muted: #5f5b50;
+  --panel-rule: rgba(0, 0, 0, .12);
+  --focus: #000000;
+  --r: 8px;
+  --font: 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --board: #000000;
+    --ink: #ffd200;
+    --ink-2: rgba(255, 210, 0, .78);
+    --muted: rgba(255, 210, 0, .58);
+    --rule: rgba(255, 210, 0, .28);
+    --rule-2: rgba(255, 210, 0, .14);
+    --urgent: #ff5a4a;
+    --off: #8d8774;
+    --panel: #1c1b17;
+    --panel-ink: #f4f0e2;
+    --panel-muted: #a8a290;
+    --panel-rule: rgba(244, 240, 226, .14);
+    --focus: #ffd200;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { background: var(--board); }
+body {
+  margin: 0 auto; max-width: 1080px; padding: 28px 24px 64px;
+  font: 400 16px/1.4 var(--font); color: var(--ink); background: var(--board);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+[hidden] { display: none !important; }
+
+/* masthead */
+.masthead { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.brand h1 { font-size: clamp(44px, 8vw, 88px); line-height: .86; font-weight: 900; letter-spacing: -.045em; }
+.promise { margin-top: 10px; font-size: 18px; font-weight: 500; max-width: 34ch; }
+.you {
+  flex: none; margin-top: 6px; max-width: 280px; padding: 9px 14px; border: 1.5px solid var(--ink);
+  border-radius: var(--r); font-size: 14px; font-weight: 600; line-height: 1.3;
+}
+.you:hover { background: var(--ink); color: var(--board); }
+
+/* summary line: the one sentence that answers "what can I win" */
+.summary { margin-top: 34px; font-size: clamp(22px, 3.2vw, 32px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; max-width: 30ch; }
+.summary .sub { display: block; margin-top: 6px; font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--ink-2); max-width: 60ch; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.filters button { padding: 7px 13px; border-radius: 99px; border: 1.5px solid var(--ink); font-size: 14px; font-weight: 600; }
+.filters button.on { background: var(--ink); color: var(--board); }
+
+/* the board */
+.board { margin-top: 18px; border-top: 3px solid var(--ink); }
+.row {
+  display: grid; grid-template-columns: 112px minmax(0, 1fr) 96px 104px 116px; gap: 14px; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--rule); width: 100%;
+}
+.row.head { padding: 8px 0; font-size: 13px; font-weight: 600; color: var(--ink-2); border-bottom: 1.5px solid var(--ink); }
+.num { text-align: right; }
+button.row { cursor: pointer; }
+button.row:hover .name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+.odds { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+.odds small { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.odds b { font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: -.03em; }
+.odds.none b { font-size: 18px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+
+.what { min-width: 0; }
+.name { display: block; font-size: 17px; font-weight: 700; line-height: 1.2; overflow-wrap: break-word; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 3px; font-size: 13px; color: var(--ink-2); }
+.tag { font-weight: 700; color: var(--ink); }
+.tag.new::before, .tag.gh::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 5px; vertical-align: 1px; }
+
+.money { font-size: 17px; font-weight: 700; }
+.money.big { font-size: 20px; font-weight: 800; }
+.closes { text-align: right; line-height: 1.2; }
+.closes b { display: block; font-size: 17px; font-weight: 700; }
+.closes span { font-size: 13px; color: var(--ink-2); }
+.closes.urgent b, .closes.urgent span { color: var(--urgent); }
+
+.filters .cal { margin-left: auto; border-style: dashed; }
+
+/* opening soon: same timetable, quieter, dates instead of odds */
+.soon { margin-top: 44px; }
+.soon h2 { font-size: 24px; font-weight: 800; letter-spacing: -.015em; }
+.soon-note { margin-top: 4px; font-size: 14px; color: var(--ink-2); }
+.soon #soonRows { margin-top: 12px; border-top: 1.5px solid var(--ink); }
+.opens { white-space: nowrap; line-height: 1.15; }
+.opens small { display: block; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.opens b { font-size: 18px; font-weight: 800; }
+
+/* calibration chart: one series, recessive grid, ink fit line */
+.calib { margin: 16px 0 0; }
+.calib figcaption { font-size: 14px; font-weight: 700; }
+.calib svg { display: block; width: 100%; height: auto; margin-top: 8px; overflow: visible; }
+.calib text { font: 500 11px var(--font); fill: var(--panel-muted); }
+.calib text.axis { font-weight: 700; fill: var(--panel-ink); }
+.calib .g { stroke: var(--panel-rule); stroke-width: 1; }
+.calib .dots circle { fill: var(--off); fill-opacity: .55; stroke: var(--panel); stroke-width: 1.5; }
+.calib .dots circle:hover { fill-opacity: 1; fill: var(--panel-ink); }
+.calib .fit { fill: none; stroke: var(--panel-ink); stroke-width: 2.5; stroke-linecap: round; }
+
+/* not for you */
+.blocked { margin-top: 30px; }
+.blocked summary { cursor: pointer; font-size: 17px; font-weight: 700; padding: 10px 0; border-bottom: 1.5px solid var(--ink); list-style: none; }
+.blocked summary::-webkit-details-marker { display: none; }
+.blocked summary::after { content: ' +'; }
+.blocked[open] summary::after { content: ' \2212'; }
+.blocked .row { color: var(--off); border-color: var(--rule-2); }
+.blocked .row .name { color: var(--off); }
+.reason { font-size: 13px; font-weight: 700; color: var(--off); }
+
+.empty { padding: 28px 0; font-size: 17px; font-weight: 500; border-bottom: 1px solid var(--rule); }
+
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 40px; font-size: 13px; color: var(--ink-2); }
+.linkish { font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* panel: quiet white, the receipt for each number */
+.scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); z-index: 20; }
+.panel {
+  position: fixed; z-index: 30; top: 0; right: 0; bottom: 0; width: min(460px, 100%); overflow-y: auto;
+  background: var(--panel); color: var(--panel-ink); padding: 26px 26px 40px;
+}
+.panel .close { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--panel-ink); font-size: 18px; text-align: center; }
+.panel h2 { font-size: 26px; line-height: 1.12; font-weight: 800; letter-spacing: -.02em; padding-right: 44px; }
+.panel .org { margin-top: 6px; font-size: 14px; color: var(--panel-muted); }
+.panel h3 { margin-top: 26px; font-size: 15px; font-weight: 700; }
+.panel p { margin-top: 8px; font-size: 15px; }
+.bigodds { display: flex; align-items: baseline; gap: 8px; margin-top: 18px; }
+.bigodds small { font-size: 18px; font-weight: 600; }
+.bigodds b { font-size: 64px; line-height: .9; font-weight: 900; letter-spacing: -.04em; }
+.verdict { margin-top: 10px; font-size: 16px; font-weight: 500; }
+
+.receipt { margin-top: 12px; border-top: 1.5px solid var(--panel-ink); }
+.receipt div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--panel-rule); font-size: 15px; }
+.receipt div b { font-weight: 700; white-space: nowrap; }
+.receipt div.total { border-bottom: 1.5px solid var(--panel-ink); font-weight: 800; }
+.receipt .op { color: var(--panel-muted); }
+
+.checks { list-style: none; padding: 0; margin: 10px 0 0; }
+.checks li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--panel-rule); font-size: 15px; }
+.checks .mark { flex: none; width: 20px; font-weight: 900; }
+.checks .no { color: var(--urgent); }
+.prizes { margin-top: 10px; }
+.prizes div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--panel-rule); font-size: 15px; }
+.prizes .noncash { color: var(--panel-muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chips span { padding: 4px 10px; border-radius: 99px; border: 1px solid var(--panel-rule); font-size: 13px; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; padding: 0 16px; border-radius: var(--r); font-weight: 700; font-size: 15px; text-decoration: none; }
+.btn.solid { background: var(--panel-ink); color: var(--panel); }
+.btn.line { border: 1.5px solid var(--panel-ink); color: var(--panel-ink); }
+
+/* about you */
+.field { display: block; margin-top: 18px; }
+.field > span { display: block; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.field input, .field select { width: 100%; height: 46px; border-radius: var(--r); border: 1.5px solid var(--panel-rule); background: transparent; color: inherit; font: inherit; padding: 0 12px; }
+.field input:focus, .field select:focus { border-color: var(--panel-ink); outline: none; }
+.field .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--panel-muted); }
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 12px 0; border-bottom: 1px solid var(--panel-rule); font-weight: 600; }
+.toggle input { width: 22px; height: 22px; accent-color: var(--panel-ink); }
+
+/* phones: the timetable folds into two lines per hackathon */
+@media (max-width: 720px) {
+  body { padding: 20px 16px 48px; }
+  .masthead { flex-direction: column; }
+  .you { max-width: none; width: 100%; text-align: left; }
+  .row { grid-template-columns: 84px minmax(0, 1fr) auto; grid-template-areas: 'odds what closes' 'odds money cash'; gap: 4px 12px; }
+  .row.head { display: none; }
+  .row > .odds { grid-area: odds; align-self: start; }
+  .row > .what { grid-area: what; }
+  .row > .closes { grid-area: closes; align-self: start; }
+  .row > .pe { grid-area: money; text-align: left; font-size: 14px; }
+  .row > .cash { grid-area: cash; font-size: 14px; }
+  .odds b { font-size: 28px; }
+  .panel { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

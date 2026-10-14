@@ -10,7 +10,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. Today's open Devpost hackathons appear on the board with deadline and cash prizes**
+- [x] **1. Today's open Devpost hackathons appear on the board with deadline and cash prizes**
   Becomes usable: A local page lists every open and upcoming Devpost hackathon with its deadline, registrants and cash prize lines, from a data file the collector wrote.
   Why now: Proves the riskiest path first (fetching and parsing Devpost) and gives every later slice real data to render.
   PRD ref: `prd.md > The Core Journey` (step 1), `prd.md > Features and Behavior`
@@ -102,3 +102,9 @@ Reflection: not started
 Activity mode: not started
 
 ## Revisions
+
+- Upcoming hackathons get their own "Opening soon" section without odds — 130 of 179 had not opened yet; their registrant counts are still tiny, so odds would have been misleadingly good, and their pages carry no deadline (the API's submission period text is used instead).
+- Eligibility model widened (university vs high-school students, age ranges, team required, US only, member-only events kept as restrictions) — the real "Who can participate" lists contained eleven line types, not the four planned; treating unknown restrictions as blocking keeps "eligible" trustworthy.
+- Collector runs four requests in parallel and saves hackathon data before calibrating — sequential calibration took 12 minutes per 20 data points because many finished hackathons have hidden galleries.
+
+- Look and feel moved from "racing form on cream paper with a monospace for figures" to "Swiss departure poster, black on signal yellow, one grotesque" — the design review before slice 1's UI found the first direction matched three of the most common generated-design defaults (cream paper, hairline broadsheet, monospace data labels).

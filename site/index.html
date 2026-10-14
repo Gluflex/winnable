@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winnable: hackathons ranked by your odds</title>
+<meta name="description" content="Every open Devpost hackathon, ranked by your realistic chance of winning cash, with eligibility checked against you.">
+<meta name="theme-color" content="#ffd200" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="brand">
+      <h1>Winnable</h1>
+      <p class="promise">Open hackathons, ranked by your odds of winning cash.</p>
+    </div>
+    <button class="you" id="youBtn" aria-haspopup="dialog"></button>
+  </header>
+
+  <section class="summary" id="summary" aria-live="polite"></section>
+
+  <nav class="filters" id="filters" aria-label="Filters">
+    <button data-f="all" class="on">All</button>
+    <button data-f="week">Closing this week</button>
+    <button data-f="new">New</button>
+    <button data-f="gh" hidden>Fits your GitHub</button>
+    <button class="cal" id="topCal" hidden>Top 5 to calendar</button>
+  </nav>
+
+  <main>
+    <div class="board" role="table" aria-label="Hackathons you can enter">
+      <div class="row head" role="row">
+        <span role="columnheader">Odds</span>
+        <span role="columnheader">Hackathon</span>
+        <span role="columnheader" class="num">Per entry</span>
+        <span role="columnheader" class="num">Cash</span>
+        <span role="columnheader" class="num">Closes</span>
+      </div>
+      <div id="rows" role="rowgroup"></div>
+    </div>
+
+    <section class="soon" id="soonWrap" hidden>
+      <h2 id="soonTitle">Opening soon</h2>
+      <p class="soon-note">No odds yet: most of the field registers after a hackathon opens.</p>
+      <div id="soonRows"></div>
+    </section>
+
+    <details class="blocked" id="blockedWrap">
+      <summary id="blockedSum">Not for you</summary>
+      <div id="blockedRows"></div>
+    </details>
+  </main>
+
+  <footer class="foot">
+    <p id="dataNote"></p>
+    <button class="linkish" id="howBtn">How the odds work</button>
+  </footer>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle" hidden></aside>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

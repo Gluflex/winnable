@@ -35,7 +35,7 @@ PRD ref: `prd.md > The Core Journey`.
 - Submission needs the demo video (under 3 minutes, YouTube or Vimeo) and the public repository with an open source licence (MIT).
 
 ## Look and Feel
-From `prd.md > Look and Feel`: paper `#f3efe6` and ink `#16140f` in light mode; `#121210` and `#ece8de` in dark mode. One accent, money green `#0b7a4b` (dark: `#3fbf7f`); muted red `#b4432f` only for "not for you" reasons. Bricolage Grotesque for headings and labels, JetBrains Mono with tabular figures for every number. Odds in large type (about 30 px on rows, 56 px in the detail). Hairline row separators (1 px, ink at 12 %), radius 10 px on controls only, no shadows, no gradients, no emoji. Short, dry copy.
+From `prd.md > Look and Feel`. Lane: a Swiss railway departure poster (the yellow SBB timetable) for prize money; deadlines are departures. Board: signal yellow `#ffd200` with pure black `#000000` text; detail panel and sheets on white `#ffffff`; red `#d0021b` only for "closes within 48 hours"; ineligible rows in grey `#6e6a5e`. Dark mode: black board with yellow text (station display at night), panels `#1c1b17`. One family, Schibsted Grotesk (Google Fonts), weights 400 to 900, tabular figures for every number; no monospace. Odds are the largest type on each row (about 34 px, 64 px in the detail). Thin timetable rules between rows (1 px black at 25 %), right-aligned figures, 24-hour local times, sentence-case column headings, radius 8 px on controls only, no shadows, no gradients, no emoji. One orchestrated motion: rows re-sort with a FLIP animation when the profile changes; reduced motion turns it off. Short, dry copy.
 
 ## Components
 
