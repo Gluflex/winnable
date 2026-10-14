@@ -58,6 +58,20 @@ export function odds(h, calib, rates, now = new Date()) {
 
 const norm = (s) => String(s || '').trim().toLowerCase();
 
+// Devpost's lists use official long names ("Iran Islamic Republic of"); the profile uses short ones
+const ALIASES = [
+  [/^korea,?\s*(democratic|dem\.|dprk)/, 'north korea'], [/^korea,?\s*republic/, 'south korea'],
+  [/^syrian arab republic/, 'syria'], [/^russian federation/, 'russia'], [/^viet ?nam/, 'vietnam'],
+  [/^lao people/, 'laos'], [/^(usa|u\.s\.a?\.?|united states of america)$/, 'united states'],
+  [/^(uk|great britain)$/, 'united kingdom'], [/^czechia$/, 'czech republic'], [/^t[uü]rkiye$/, 'turkey'],
+  [/^cote d.ivoire/, "côte d'ivoire"],
+];
+export function canonCountry(s) {
+  const n = norm(s).replace(/\s+/g, ' ');
+  for (const [re, to] of ALIASES) if (re.test(n)) return to;
+  return n.replace(/,?\s*(islamic republic of|republic of|state of|plurinational state of|bolivarian republic of|united republic of|province of china)$/, '');
+}
+
 // The profile's student status: 'no' | 'university' | 'high school' (older profiles stored a boolean)
 export function studentLevel(p) {
   if (p.student === true) return 'university';
@@ -84,9 +98,9 @@ export function ineligibility(h, profile, now = new Date()) {
   if (e.team_min && p.team === false) out.push(`Team of ${e.team_min} or more required`);
   for (const r of e.restricted || []) out.push(r);
   if (p.country) {
-    const c = norm(p.country);
-    if ((e.countries_excluded || []).some((x) => norm(x) === c)) out.push(`Not open in ${p.country}`);
-    if ((e.countries_only || []).length && !e.countries_only.some((x) => norm(x).includes(c))) {
+    const c = canonCountry(p.country);
+    if ((e.countries_excluded || []).some((x) => canonCountry(x) === c)) out.push(`Not open in ${p.country}`);
+    if ((e.countries_only || []).length && !e.countries_only.some((x) => canonCountry(x) === c || norm(x).includes(c))) {
       out.push(`Only ${e.countries_only.join(', ')}`);
     }
   }
@@ -97,11 +111,16 @@ export function daysLeft(h, now = new Date()) {
   return h.deadline ? (new Date(h.deadline) - now) / 864e5 : null;
 }
 
-// Not open yet: registrations are still small, so odds would be misleadingly good
-export const isUpcoming = (h, now = new Date()) => h.open_state === 'upcoming' || (h.starts && new Date(h.starts) > now);
+// Not open yet, or opened so recently (under 20 % of its submission period) that the field
+// is still forming: odds would be misleadingly good, so these get dates but no odds
+export const EARLY_SHARE = 0.2;
+export function isUpcoming(h, now = new Date()) {
+  if (h.open_state === 'upcoming' || (h.starts && new Date(h.starts) > now)) return true;
+  if (!h.starts || !h.deadline) return false;
+  const start = new Date(h.starts), end = new Date(h.deadline);
+  return end > start && (now - start) / (end - start) < EARLY_SHARE;
+}
 
-// Everything the board needs: open and eligible by expected cash, then by deadline;
-// upcoming ones by start date, without odds; blocked ones with their reasons
 // Sort orders the board offers. Best odds first; ties go to the bigger expected cash.
 export const SORTS = {
   odds: (a, b) => (a.oneIn ?? 1e12) - (b.oneIn ?? 1e12) || b.ev - a.ev,
@@ -109,12 +128,17 @@ export const SORTS = {
   deadline: (a, b) => (a.days ?? 1e9) - (b.days ?? 1e9),
 };
 
+// Everything the board needs: open and eligible in the chosen order; upcoming or just-opened
+// ones by start date, without odds; blocked ones with their reasons
 export function rankAll(data, profile, now = new Date(), sort = 'odds') {
   const rows = data.hackathons.map((h) => {
     const o = odds(h, data.calibration, data.rates, now);
     return { h, ...o, reasons: ineligibility(h, profile, now), days: daysLeft(h, now), upcoming: isUpcoming(h, now) };
   }).filter((r) => r.days == null || r.days > -1);
-  const by = SORTS[sort] || SORTS.odds;
+  // Under 24 hours left is too little to build anything: those go to the end of every order
+  const late = (r) => (r.days != null && r.days < 1 ? 1 : 0);
+  const base = SORTS[sort] || SORTS.odds;
+  const by = sort === 'deadline' ? base : (a, b) => late(a) - late(b) || base(a, b);
   const byStart = (a, b) => new Date(a.h.starts || a.h.deadline || 0) - new Date(b.h.starts || b.h.deadline || 0);
   return {
     eligible: rows.filter((r) => !r.reasons.length && !r.upcoming).sort(by),

@@ -10,7 +10,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const int = (v) => Math.round(v).toLocaleString('en-US');
-const usd = (v) => (v == null ? 'n/a' : v >= 100 ? `$${int(v)}` : v >= 1 ? `$${v.toFixed(2)}` : v > 0 ? `${Math.max(1, Math.round(v * 100))}¢` : '$0');
+const usd = (v) => (v == null ? 'n/a' : v >= 10 ? `$${int(v)}` : v >= 1 ? `$${v.toFixed(2)}` : v > 0 ? `${Math.max(1, Math.round(v * 100))}¢` : '$0');
 const PKEY = 'winnable:profile', VKEY = 'winnable:lastVisit';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -68,10 +68,11 @@ function rowHtml(r, blocked) {
 
 function soonHtml(r) {
   const h = r.h;
+  const started = h.starts && new Date(h.starts) <= new Date();
   const opens = h.starts ? new Date(h.starts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'soon';
   const gh = ghIndex ? matchFor(h, ghIndex) : null;
   return `<button class="row" role="row" data-id="${h.id}">
-    <div class="opens"><small>opens</small><b>${opens}</b></div>
+    <div class="opens"><small>${started ? 'opened' : 'opens'}</small><b>${opens}</b></div>
     <div class="what"><span class="name">${esc(h.title)}</span><span class="meta"><span>${int(h.registrants)} registered so far</span>${gh?.repos.length ? '<span class="tag gh">fits your GitHub</span>' : ''}</span></div>
     <div class="num pe"></div>
     <div class="num cash money big ${r.totalCash ? '' : 'nocash'}">${r.totalCash ? usd(r.totalCash) : '<span class="reason">no cash</span>'}</div>
@@ -98,7 +99,7 @@ function render(animate) {
         : filter === 'week' ? 'Nothing you can enter closes this week.' : 'Nothing you can enter right now. The reasons are below.'}</div>`;
   $('#soonRows').innerHTML = ranked.upcoming.map(soonHtml).join('');
   $('#soonWrap').hidden = !ranked.upcoming.length || filter !== 'all';
-  $('#soonTitle').textContent = `Opening soon (${ranked.upcoming.length})`;
+  $('#soonTitle').textContent = `Opening soon or just opened (${ranked.upcoming.length})`;
   $('#topCal').hidden = !ranked.eligible.some((r) => r.oneIn);
   $('#blockedRows').innerHTML = ranked.blocked.map((r) => rowHtml(r, true)).join('');
   $('#blockedSum').textContent = `Not for you (${ranked.blocked.length})`;
@@ -115,8 +116,8 @@ function summary() {
   const best = ranked.eligible.find((r) => r.oneIn);
   const openNow = n + ranked.blocked.filter((r) => !r.upcoming).length;
   const lead = hasProfile()
-    ? `${n} hackathons you can enter, ${usd(cash)} in cash.`
-    : `${openNow} hackathons open on Devpost, ${n} of them online with ${usd(cash)} in cash.`;
+    ? `${n} open hackathons you can enter right now.`
+    : `${openNow} hackathons are open on Devpost right now. Tell Winnable about you to see which you can enter.`;
   const sub = best ? `Best odds right now: 1 in ${int(best.oneIn)}, ${esc(best.h.title)}. Odds come from ${DATA.calibration.n} finished hackathons.` : '';
   $('#summary').innerHTML = `${lead}<span class="sub">${sub}</span>`;
 }
@@ -193,11 +194,11 @@ function openDetail(id) {
   const growing = h.open_state === 'upcoming' || (daysLeft(h) ?? 0) > 3;
 
   openPanel(`
-    <h2 id="panelTitle">${esc(h.title)}</h2>
+    <div class="panel-head"><h2 id="panelTitle">${esc(h.title)}</h2>
     <p class="org">${esc(h.org || 'Devpost')}${h.deadline ? `, closes ${new Date(h.deadline).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}` : ''}</p>
     ${r.oneIn ? `<div class="bigodds"><small>1 in</small><b>${int(r.oneIn)}</b></div>` : '<div class="bigodds"><b>no cash</b></div>'}
-    <p class="verdict">${verdict(r)}</p>
-    ${r.reasons?.length ? `<p class="verdict" style="color:var(--urgent);font-weight:700">Not for you: ${esc(r.reasons.join(', '))}.</p>` : ''}
+    <p class="verdict">${verdict(r)}</p></div>
+    ${r.reasons?.length ? `<p class="verdict blocked-reason">Not for you: ${esc(r.reasons.join(', '))}.</p>` : ''}
 
     <h3>How the odds are made</h3>
     <div class="receipt">
@@ -238,7 +239,8 @@ function openAbout() {
     <p class="org">These answers decide which hackathons you can enter. They stay in this browser.</p>
     <label class="field"><span>Country you live in</span>
       <select id="pfCountry"><option value="">Choose a country</option>${COUNTRIES.map((c) => `<option ${c === profile.country ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
-    <label class="toggle"><span>I am 18 or older</span><input type="checkbox" id="pfAdult" ${profile.adult ? 'checked' : ''}></label>
+    <label class="field"><span>Age</span>
+      <select id="pfAdult"><option value="">Choose</option><option value="yes" ${profile.adult === true ? 'selected' : ''}>18 or older</option><option value="no" ${profile.adult === false ? 'selected' : ''}>Under 18</option></select></label>
     <label class="field"><span>Student</span>
       <select id="pfStudent">${[['no', 'Not a student'], ['university', 'University or college'], ['high school', 'High school']].map(([v, l]) => `<option value="${v}" ${studentLevel(profile) === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
     <label class="toggle"><span>I can enter with a team</span><input type="checkbox" id="pfTeam" ${profile.team ? 'checked' : ''}></label>
@@ -248,7 +250,7 @@ function openAbout() {
       <span class="hint" id="pfGhNote">Marks hackathons whose themes fit your public repos. Only GitHub sees the request.</span></label>
     <div class="actions" style="grid-template-columns:1fr"><button class="btn solid" id="pfDone">Show my odds</button></div>`, '#pfCountry');
   const update = () => {
-    profile = { ...profile, country: $('#pfCountry').value || null, adult: $('#pfAdult').checked, student: $('#pfStudent').value,
+    profile = { ...profile, country: $('#pfCountry').value || null, adult: $('#pfAdult').value === '' ? null : $('#pfAdult').value === 'yes', student: $('#pfStudent').value,
       team: $('#pfTeam').checked, onlineOnly: $('#pfOnline').checked, github: $('#pfGithub').value.trim() || null };
     save(PKEY, profile);
   };

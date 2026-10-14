@@ -63,9 +63,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .summary { margin-top: 34px; font-size: clamp(22px, 3.2vw, 32px); font-weight: 700; letter-spacing: -.015em; line-height: 1.15; max-width: 30ch; }
 .summary .sub { display: block; margin-top: 6px; font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--ink-2); max-width: 60ch; }
 
-.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
-.filters button { padding: 7px 13px; border-radius: 99px; border: 1.5px solid var(--ink); font-size: 14px; font-weight: 600; }
-.filters button.on { background: var(--ink); color: var(--board); }
+.filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 22px; margin-top: 30px; }
+.filters > button { padding: 6px 0 7px; font-size: 15px; font-weight: 700; color: var(--ink-2); border-bottom: 3px solid transparent; }
+.filters > button.on { color: var(--ink); border-color: var(--ink); }
+.filters > button:hover { color: var(--ink); }
 
 /* the board */
 .board { margin-top: 18px; border-top: 3px solid var(--ink); }
@@ -80,7 +81,7 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 
 .odds { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
 .odds small { font-size: 13px; font-weight: 600; color: var(--ink-2); }
-.odds b { font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: -.03em; }
+.odds b { font-size: 34px; line-height: 1; font-weight: 900; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .odds.none b { font-size: 18px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
 
 .what { min-width: 0; }
@@ -96,9 +97,9 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 .closes span { font-size: 13px; color: var(--ink-2); }
 .closes.urgent b, .closes.urgent span { color: var(--urgent); }
 
-.filters .sort { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
-.filters .sort select { font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 1.5px solid var(--ink); border-radius: 99px; padding: 6px 12px; }
-.filters .cal { border-style: dashed; }
+.filters .sort { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding-bottom: 7px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.filters .sort select { font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 1.5px solid var(--ink); border-radius: 0; padding: 2px 2px 3px; }
+.filters .cal { padding-bottom: 7px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; border: 0; }
 
 /* opening soon: same timetable, quieter, dates instead of odds */
 .soon { margin-top: 44px; }
@@ -142,6 +143,10 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
   background: var(--panel); color: var(--panel-ink); padding: 26px 26px 40px;
 }
 .panel .close { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--panel-ink); font-size: 18px; text-align: center; }
+.panel-head { margin: -26px -26px 4px; padding: 26px 26px 20px; background: var(--board); color: var(--ink); border-bottom: 3px solid var(--ink); }
+.panel-head .org { color: var(--ink-2); }
+.panel .close { z-index: 1; }
+.blocked-reason { color: var(--urgent); font-weight: 700; }
 .panel h2 { font-size: 26px; line-height: 1.12; font-weight: 800; letter-spacing: -.02em; padding-right: 44px; }
 .panel .org { margin-top: 6px; font-size: 14px; color: var(--panel-muted); }
 .panel h3 { margin-top: 26px; font-size: 15px; font-weight: 700; }
@@ -174,7 +179,7 @@ button.row:hover .name { text-decoration: underline; text-decoration-thickness: 
 
 /* about you */
 .field { display: block; margin-top: 18px; }
-.field > span { display: block; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.field > span:first-child { display: block; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
 .field input, .field select { width: 100%; height: 46px; border-radius: var(--r); border: 1.5px solid var(--panel-rule); background: transparent; color: inherit; font: inherit; padding: 0 12px; }
 .field input:focus, .field select:focus { border-color: var(--panel-ink); outline: none; }
 .field .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--panel-muted); }

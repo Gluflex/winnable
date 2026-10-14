@@ -111,6 +111,8 @@ def parse_eligibility(page):
             pass  # individuals are fine
         elif "all countries" in low and not countries:
             pass
+        elif len(t) < 4 or low in ("n/a", "none", "na", "tbd", "tba"):
+            pass  # placeholder lines some organisers leave in the list
         else:
             el["restricted"].append(t)  # member-only, one university only, invite lists
     return el
@@ -169,6 +171,50 @@ def amount_in(s):
     return value, cur
 
 
+# Words that mean the prize IS an item, not money (certificates, interviews or points are extras on top of cash)
+ITEM = re.compile(r"\b(credits?|licen[cs]es?|domains?|access|scholarships?|subscriptions?|merch\w*|mousepads?|tote bags?|"
+                  r"gift ?cards?|vouchers?|coupons?|discounts?|swag|memberships?)\b", re.I)
+PLACE = re.compile(r"\b(1st|2nd|3rd|\d+th|first|second|third|winners?|runner|place|grand|overall|champion)\b", re.I)
+
+
+def paid_in_kind(title, desc, amount):
+    """Devpost says "in cash" but the description says otherwise. Rule A: the description puts this prize's
+    amount next to an item word ("$100 in Momen credits"). Rule B: the description names only items, no money,
+    and the title is not a placing ("Five MojoAuth licenses")."""
+    if not desc or "cash" in desc.lower():
+        return None
+    for m in AMOUNT.finditer(desc):
+        v, _ = amount_in(m.group(0))
+        if v and amount and abs(v - amount) <= max(1, amount * 0.02):
+            hit = NONCASH.search(desc[max(0, m.start() - 30): m.end() + 30]) or ITEM.search(desc[max(0, m.start() - 30): m.end() + 30])
+            if hit:
+                return f"Paid as {hit.group(0).lower()}"
+    if not AMOUNT.search(desc) and ITEM.search(desc) and not PLACE.search(title):
+        return f"Paid as {ITEM.search(desc).group(0).lower()}"
+    return None
+
+
+MULT = re.compile(r"\beach\b[^.$\d]{0,25}?(\d+)|\bx\s*(\d+)\b|\bfor\s+(\d+)\s+(?:people|winners|teams|participants|submissions|prs|projects)", re.I)
+
+
+def free_text_total(s):
+    """All money in a prize text, with multipliers:
+    'A $2,000 top prize, and $100 each to 20 people' -> (4000.0, 21, 'USD')."""
+    total, count, cur = 0.0, 0, None
+    matches = list(AMOUNT.finditer(s or ""))
+    for i, m in enumerate(matches):
+        v, c = amount_in(m.group(0))
+        if not v:
+            continue
+        cur = cur or c
+        stop = matches[i + 1].start() if i + 1 < len(matches) else len(s)
+        mult = MULT.search(s[m.end(): min(stop, m.end() + 45)])  # a multiplier belongs to the amount before it
+        n = int(next(g for g in mult.groups() if g)) if mult else 1
+        total += v * n
+        count += n
+    return (total or None), max(count, 1), cur
+
+
 def parse_prizes(page):
     prizes = []
     for chunk in re.split(r'<div class="[^"]*\bprize\b[^"]*" id="prize_\d+"', page)[1:]:
@@ -179,31 +225,31 @@ def parse_prizes(page):
         dtext = text(desc.group(1))[:300] if desc else ""
         vtext = text(val.group(1)) if val else ""
         amount, cur = money(val.group(1)) if val else (None, None)
-        cash, inferred = bool(amount) and "in cash" in vtext.lower(), False
-        if amount is None:  # organiser wrote the amount into the title or description instead of the prize field
-            amount, cur = amount_in(title)
-            source = title
-            if amount is None:
-                amount, cur = amount_in(dtext)
-                source = dtext
-            if amount:
-                cash, inferred = not NONCASH.search(source), True
-        note = None
-        if cash and not inferred and NONCASH.search(title):
-            # Devpost says "in cash", the title says "$5,000 in credits + ...": only the remainder is cash
-            t_amount, _ = amount_in(title)
-            if t_amount:
-                rest = max(0.0, amount - t_amount)
-                note = f"Mostly {NONCASH.search(title).group(0).lower()}: {rest:,.0f} of {amount:,.0f} is cash"
-                amount, cash = rest, rest > 0
-            else:
-                note = f"Title mentions {NONCASH.search(title).group(0).lower()}"
-        elif cash and NONCASH.search(dtext):
-            note = f"Prize text mentions {NONCASH.search(dtext).group(0).lower()}"
+        cash, inferred, note = bool(amount) and "in cash" in vtext.lower(), False, None
         w = re.search(r"(\d+)\s*winners?", text(chunk))
+        winners = int(w.group(1)) if w else 1
+        if amount is None:  # organiser wrote the amount into the title or description instead of the prize field
+            source = title if amount_in(title)[0] else dtext
+            amount, n, cur = free_text_total(source)
+            if amount:
+                inferred = True
+                winners = max(winners, n)
+                hit = NONCASH.search(f"{title} {dtext}")  # "$250 Winner" + "Amazon gift card" is not cash
+                cash = not hit
+                note = f"{hit.group(0).capitalize()}, not cash" if hit else None
+        elif cash:
+            hit_title = NONCASH.search(title)
+            kind = paid_in_kind(title, dtext, amount)
+            if hit_title and "cash" not in title.lower():
+                # Devpost says "in cash", the title says "$5,000 in credits + 12 months of Pro": not cash
+                cash, note = False, f"Title names {hit_title.group(0).lower()}, not counted"
+            elif kind:
+                cash, note = False, f"{kind}, not counted"
+            elif NONCASH.search(dtext):
+                note = f"Prize text also mentions {NONCASH.search(dtext).group(0).lower()}"
         prizes.append({"title": title, "value": vtext or (f"{cur} {amount:,.0f} (from prize text)" if amount else ""),
                        "desc": dtext, "amount": amount, "currency": cur, "cash": bool(cash), "inferred": inferred,
-                       "note": note, "winners": int(w.group(1)) if w else 1})
+                       "note": note, "winners": winners})
     return prizes
 
 

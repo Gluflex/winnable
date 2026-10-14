@@ -33,7 +33,7 @@ def set_profile(page):
     page.wait_for_timeout(300)
     if page.locator("#pfCountry").count():
         page.select_option("#pfCountry", "Switzerland")
-        page.check("#pfAdult")
+        page.select_option("#pfAdult", "yes")
         page.select_option("#pfStudent", "university")
         page.check("#pfTeam")
         page.fill("#pfGithub", "Gluflex")

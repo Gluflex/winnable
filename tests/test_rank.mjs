@@ -68,6 +68,12 @@ assert.deepEqual(ineligibility({ online: true, eligibility: { restricted: ['SMU 
 assert.deepEqual(ineligibility({ online: false, location: 'Basel, Switzerland' }, {}, now), ['In person: Basel, Switzerland']);
 assert.deepEqual(ineligibility({ online: false, location: 'Basel' }, { onlineOnly: false }, now), []);
 assert.deepEqual(ineligibility({ online: false, location: 'Online, from anywhere' }, {}, now), [], 'online variants count as online');
+const longNames = { online: true, eligibility: { countries_excluded: ['Iran Islamic Republic of', "Korea Democratic People's Republic of", 'Syrian Arab Republic'] } };
+assert.deepEqual(ineligibility(longNames, { country: 'Iran' }, now), ['Not open in Iran']);
+assert.deepEqual(ineligibility(longNames, { country: 'North Korea' }, now), ['Not open in North Korea']);
+assert.deepEqual(ineligibility(longNames, { country: 'South Korea' }, now), []);
+assert.deepEqual(ineligibility(longNames, { country: 'Syria' }, now), ['Not open in Syria']);
+assert.deepEqual(ineligibility({ online: true, eligibility: { min_age: 18 } }, { adult: null }, now), [], 'unanswered age never blocks');
 assert.deepEqual(ineligibility({ online: true, eligibility: { countries_only: ['United States'] } }, { country: 'Netherlands' }, now),
   ['Only United States']);
 
@@ -87,6 +93,14 @@ assert.deepEqual(r.eligible.map((x) => x.h.id), [2, 1], 'small field beats big p
 assert.deepEqual(rankAll(data, { onlineOnly: true }, now, 'deadline').eligible.map((x) => x.h.id), [2, 1]);
 assert.deepEqual(rankAll(data, { onlineOnly: true }, now, 'ev').eligible.map((x) => x.h.id), [2, 1]);
 assert.deepEqual(r.upcoming.map((x) => x.h.id), [5], 'not-yet-open hackathons are never ranked by odds');
+// Just opened (under 20 % of the period): no odds yet
+const fresh = { id: 6, registrants: 3, online: true, open_state: 'open', starts: '2026-10-14T00:00:00Z', deadline: '2026-11-14T00:00:00Z', prizes: [{ amount: 500, currency: 'USD', cash: true, winners: 1 }] };
+const r2 = rankAll({ ...data, hackathons: [fresh, ...data.hackathons] }, { onlineOnly: true }, now);
+assert.ok(r2.upcoming.some((x) => x.h.id === 6) && !r2.eligible.some((x) => x.h.id === 6), 'freshly opened hackathons wait for their field');
+// Under 24 hours left: last, whatever the odds
+const closing = { id: 7, registrants: 10, online: true, starts: '2026-09-01T00:00:00Z', deadline: '2026-10-14T20:00:00Z', prizes: [{ amount: 5000, currency: 'USD', cash: true, winners: 3 }] };
+const r3 = rankAll({ ...data, hackathons: [closing, ...data.hackathons] }, { onlineOnly: true }, now);
+assert.equal(r3.eligible.at(-1).h.id, 7);
 assert.deepEqual(r.blocked.map((x) => x.h.id), [3]);
 
 console.log('rank tests: all passed');
