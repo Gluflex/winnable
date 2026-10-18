@@ -66,6 +66,7 @@ assert.deepEqual(ineligibility({ online: true, eligibility: { team_min: 2 } }, {
 assert.deepEqual(ineligibility({ online: true, eligibility: { team_min: 2 } }, { team: true }, now), []);
 assert.deepEqual(ineligibility({ online: true, eligibility: { restricted: ['SMU BIA members'] } }, {}, now), ['SMU BIA members']);
 assert.deepEqual(ineligibility({ online: false, location: 'Basel, Switzerland' }, {}, now), ['In person: Basel, Switzerland']);
+assert.deepEqual(ineligibility({ online: false, location: 'Block 45, Sharda University, ' }, {}, now), ['In person: Block 45, Sharda University'], 'organiser-typed trailing commas are trimmed');
 assert.deepEqual(ineligibility({ online: false, location: 'Basel' }, { onlineOnly: false }, now), []);
 assert.deepEqual(ineligibility({ online: false, location: 'Online, from anywhere' }, {}, now), [], 'online variants count as online');
 assert.deepEqual(ineligibility({ online: false, location: 'Meadowlands Exposition Center + Online' }, {}, now), [], 'hybrid events can be entered online');

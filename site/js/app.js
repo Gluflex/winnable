@@ -1,6 +1,6 @@
 // Winnable board: loads the daily data file, ranks it for the builder's profile,
 // and renders the timetable, the detail receipt and the about-you panel.
-import { rankAll, cashPrizes, daysLeft, odds as oddsOf, ineligibility, studentLevel, isParticipation } from './rank.js';
+import { rankAll, cashPrizes, daysLeft, odds as oddsOf, ineligibility, studentLevel, isParticipation, place } from './rank.js';
 import { fetchRepos, themeIndex, matchFor } from './github.js';
 import { buildIcs, download } from './ics.js';
 import { COUNTRIES } from './countries.js';
@@ -52,7 +52,7 @@ function rowHtml(r, blocked) {
   const gh = ghIndex ? matchFor(h, ghIndex) : null;
   const tags = [
     `<span>${int(h.registrants)} registered</span>`,
-    h.online ? '' : `<span>${esc(h.location)}</span>`,
+    h.online ? '' : `<span>${esc(place(h))}</span>`,
     isNew(h) ? '<span class="tag new">new</span>' : '',
     gh?.repos.length ? '<span class="tag gh">fits your GitHub</span>' : '',
   ].join('');
@@ -187,7 +187,7 @@ function openDetail(id) {
       !(e.students && level && level !== e.students) && !(e.professionals_only && level === 'high school')],
     e.team_min ? ['Team', `Team of ${e.team_min} or more`, prof.team !== false] : null,
     ...(e.restricted || []).map((x) => ['Restricted', x, false]),
-    ['Location', h.online ? 'Online' : `In person: ${h.location}`, h.online || prof.onlineOnly === false],
+    ['Location', h.online ? 'Online' : `In person: ${place(h)}`, h.online || prof.onlineOnly === false],
     h.invite_only ? ['Access', 'Invite only', false] : null,
   ].filter(Boolean);
   const gh = ghIndex ? matchFor(h, ghIndex) : null;

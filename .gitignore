@@ -9,3 +9,5 @@ __pycache__/
 docs/screens/
 verify.log
 dist/
+.wrangler/
+HANDOVER.md

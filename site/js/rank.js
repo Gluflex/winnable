@@ -79,6 +79,9 @@ export function studentLevel(p) {
   return p.student || null;
 }
 
+// The location as organisers typed it, without trailing commas ("Block 45, Sharda University, ")
+export const place = (h) => String(h.location || '').replace(/[\s,]+$/, '');
+
 // Reasons this profile cannot enter; empty array = eligible
 export function ineligibility(h, profile, now = new Date()) {
   const p = profile || {};
@@ -88,7 +91,7 @@ export function ineligibility(h, profile, now = new Date()) {
   if (h.deadline && new Date(h.deadline) < now) out.push('Closed');
   if (h.invite_only) out.push('Invite only');
   const online = h.online || /\b(online|virtual|remote)\b/i.test(h.location || '');  // hybrids too: "Expo Center + Online"
-  if (!online && p.onlineOnly !== false) out.push(`In person: ${h.location}`);
+  if (!online && p.onlineOnly !== false) out.push(`In person: ${place(h)}`);
   if (e.min_age >= 18 && p.adult === false) out.push(`${e.min_age}+ only`);
   if (e.max_age != null && e.max_age <= 19 && p.adult === true) out.push(`Ages ${e.min_age ?? 13} to ${e.max_age} only`);
   if (e.students_only && level === 'no') out.push('Students only');
