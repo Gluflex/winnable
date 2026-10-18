@@ -1,6 +1,6 @@
 // Winnable board: loads the daily data file, ranks it for the builder's profile,
 // and renders the timetable, the detail receipt and the about-you panel.
-import { rankAll, cashPrizes, daysLeft, odds as oddsOf, ineligibility, studentLevel, isParticipation, place } from './rank.js';
+import { rankAll, cashPrizes, daysLeft, odds as oddsOf, ineligibility, studentLevel, isParticipation, place, openCount, bestOdds } from './rank.js';
 import { fetchRepos, themeIndex, matchFor } from './github.js';
 import { buildIcs, download } from './ics.js';
 import { COUNTRIES } from './countries.js';
@@ -113,8 +113,8 @@ function render(animate) {
 function summary() {
   const n = ranked.eligible.length;
   const cash = ranked.eligible.reduce((s, r) => s + r.totalCash, 0);
-  const best = ranked.eligible.find((r) => r.oneIn);
-  const openNow = n + ranked.blocked.filter((r) => !r.upcoming).length;
+  const best = bestOdds(ranked);
+  const openNow = openCount(ranked);
   const lead = hasProfile()
     ? `${n} open hackathons you can enter right now.`
     : `${openNow} hackathons are open on Devpost right now. Tell Winnable about you to see which you can enter.`;

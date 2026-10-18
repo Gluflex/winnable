@@ -124,6 +124,19 @@ export function isUpcoming(h, now = new Date()) {
   return end > start && (now - start) / (end - start) < EARLY_SHARE;
 }
 
+// How many hackathons Devpost lists as open right now: started and not closed, whether
+// ranked, just opened (no odds yet) or blocked for this profile
+export function openCount(ranked, now = new Date()) {
+  const started = (r) => r.h.open_state !== 'upcoming' && !(r.h.starts && new Date(r.h.starts) > now) && !(r.days != null && r.days < 0);
+  return [...ranked.eligible, ...ranked.upcoming, ...ranked.blocked].filter(started).length;
+}
+
+// The best odds on offer, whatever sort the board shows (hackathons closing within a day excluded)
+export function bestOdds(ranked) {
+  return ranked.eligible.filter((r) => r.oneIn && !(r.days != null && r.days < 1))
+    .reduce((best, r) => (!best || r.oneIn < best.oneIn ? r : best), undefined);
+}
+
 // Sort orders the board offers. Best odds first; ties go to the bigger expected cash.
 export const SORTS = {
   odds: (a, b) => (a.oneIn ?? 1e12) - (b.oneIn ?? 1e12) || b.ev - a.ev,

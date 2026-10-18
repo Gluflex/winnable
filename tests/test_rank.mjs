@@ -1,6 +1,6 @@
 // node tests/test_rank.mjs
 import assert from 'node:assert/strict';
-import { expectedSubmissions, odds, ineligibility, rankAll, projectedRegistrants } from '../site/js/rank.js';
+import { expectedSubmissions, odds, ineligibility, rankAll, projectedRegistrants, openCount, bestOdds } from '../site/js/rank.js';
 
 const calib = { a: 1, b: 0.9, n: 200 };
 const rates = { USD: 1, EUR: 1.1 };
@@ -104,5 +104,12 @@ const closing = { id: 7, registrants: 10, online: true, starts: '2026-09-01T00:0
 const r3 = rankAll({ ...data, hackathons: [closing, ...data.hackathons] }, { onlineOnly: true }, now);
 assert.equal(r3.eligible.at(-1).h.id, 7);
 assert.deepEqual(r.blocked.map((x) => x.h.id), [3]);
+// Open now counts what Devpost calls open: started, not closed, whether ranked, just opened or blocked
+assert.equal(openCount(r2, now), r2.eligible.length + r2.blocked.filter((x) => x.h.open_state !== 'upcoming').length + 1, 'the just-opened hackathon counts as open');
+assert.ok(!r.upcoming.some((x) => openCount({ eligible: [], upcoming: [x], blocked: [] }, now)), 'not-yet-open hackathons do not count');
 
+// The headline's best odds do not depend on the chosen sort
+const byCash = rankAll(data, { onlineOnly: true }, now, 'ev');
+assert.equal(bestOdds(byCash)?.oneIn, Math.min(...byCash.eligible.filter((x) => x.oneIn && x.days >= 1).map((x) => x.oneIn)));
+assert.equal(bestOdds({ eligible: [] }), undefined);
 console.log('rank tests: all passed');

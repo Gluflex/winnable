@@ -4,13 +4,13 @@
 
 **Try it:** [winnable.lcatarci.workers.dev](https://winnable.lcatarci.workers.dev)
 
-Devpost lists every hackathon by prize or deadline. The biggest prize is rarely the best bet: on 18 October 2026 Amazon's hackathon, USD 128,000 in cash and 56,786 registrants, worked out at 1 in 857 for an average entry. An AWS hackathon open to the same people, USD 40,000 and 939 registrants, was 1 in 61. Winnable reads every open Devpost hackathon each day, works out how many people will really submit, counts only cash, checks whether you may enter at all, and ranks what is left by your odds.
+Devpost lists every hackathon by prize or deadline, but the prize says nothing about your chances. On 18 October 2026 Amazon's hackathon paid USD 128,000 in cash to a field of 56,798 registrants: 1 in 857 for an average entry. Meta's VR competition, open to the same people, paid USD 1,000,000 in cash across 20 prizes to 3,385 registrants: 1 in 64. Eight times the prize, thirteen times the odds; the field decides. Winnable reads every open Devpost hackathon each day, works out how many people will really submit, counts only cash, checks whether you may enter at all, and ranks what is left by your odds.
 
 ![The Winnable board](docs/img/board.png)
 
 ## What it does
 
-- **Odds per hackathon.** "1 in 65" means one cash prize for every 65 expected submissions.
+- **Odds per hackathon.** "1 in 64" means one cash prize for every 64 expected submissions.
 - **Calibrated, not guessed.** Most registrants never submit. Winnable learns how many do from finished Devpost hackathons: registrants against the projects in their galleries. The first calibration used 150 finished hackathons; the median submission rate was 28 %, and the fitted curve is submissions = 0.41 × registrants^0.90. The chart is in the app under "How the odds work".
 - **Cash only.** Credits, gift cards, licences, scholarships, swag and participation awards are listed but never counted. Devpost's "in cash" label is checked against the prize's own words: "$5,000 in Deployxa credits + 12 months of Pro" or "$2,000 in Momen credits" count as nothing, with the reason shown. Amounts written only into the prize text are read with their multipliers ("$100 each to 20 people").
 - **Can you enter.** Country, age, student status (university or high school) and team are checked against each hackathon's eligibility list, with the reason shown when you cannot: "Not open in Brazil", "High school students only", "In person: Bengaluru", "Team of 2 or more required". Member-only events stay blocked with their own wording.

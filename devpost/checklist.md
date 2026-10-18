@@ -90,6 +90,8 @@ Build mode: fast
 - [x] Final review complete — feedback resolved and learner confirms ready to ship (confirmation under Leandro's delegation of 14.10.2026; his own look happens when he reviews the submission package)
 - [x] Fix: organiser-typed trailing commas in locations ("In person: Block 45, Sharda University, ") — `place()` in rank.js, test added, committed
 - [x] Fix: the first-visit About panel no longer reopens over a panel the visitor already opened within 600 ms — guarded in `boot()`, checked in the browser
+- [x] Fix: "hackathons are open on Devpost right now" counted only rated and blocked rows (58), not the just-opened ones; `openCount()` now matches Devpost's own count (68), test added
+- [x] Fix: "Best odds right now" followed the chosen sort and named a 1 in 64 hackathon while a 1 in 1 existed; `bestOdds()` is sort-independent, test added
 
 ## Code Tour and App Map
 
@@ -97,7 +99,7 @@ Build mode: fast
 - [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
 - [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: brief evidence-based recap, not hands-on practice (the learner delegated the build and was not present). Evidence: spec.md "Decisions and Open Issues" (submission-rate uncertainty, 5 points, 0.24 to 0.53) resolved by the 150-point calibration; the day-one ranking revision pinned by the projectedRegistrants tests
+Activity and evidence: brief evidence-based recap, not a hands-on session (Leandro delegated the build to the agent on 14.10.2026, as each planning document records). Evidence: spec.md "Decisions and Open Issues" (submission-rate uncertainty, 5 points, 0.24 to 0.53) resolved by the 150-point calibration; the day-one ranking revision pinned by the projectedRegistrants tests
 Route and stops: reference route in the map, not toured together: app.js #pfDone handler, rank.js rankAll/odds/ineligibility, app.js render/rowHtml/openDetail
 Edit outcome: not applicable (no learner session)
 Reflection: not offered (no learner session); the transfer question is left for Leandro
