@@ -11,3 +11,4 @@ verify.log
 dist/
 .wrangler/
 HANDOVER.md
+/devpost/submission.md

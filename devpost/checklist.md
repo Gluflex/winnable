@@ -83,23 +83,25 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slices 3 to 6: agent click-through with screenshots on desktop light, dark and phone; fixes applied (open count on first visit, lighter overlay, phone labels for per-entry and cash)
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed — 18 Oct, agent exploration under Leandro's delegation (14.10.2026): live board with two profiles (Brazil, under 18, high school: 0 enterable, every empty state reads clearly; Germany, adult: 11 enterable), unknown GitHub user (message shown, filter hidden), all filters and sorts, detail open and Escape, top-5 calendar (5 valid events), phone at 375 px (no sideways scroll), desktop light and dark via tests/verify.py (0 console errors)
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship (confirmation under Leandro's delegation of 14.10.2026; his own look happens when he reviews the submission package)
+- [x] Fix: organiser-typed trailing commas in locations ("In person: Block 45, Sharda University, ") — `place()` in rank.js, test added, committed
+- [x] Fix: the first-visit About panel no longer reopens over a panel the visitor already opened within 600 ms — guarded in `boot()`, checked in the browser
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: not started
-Route and stops: not started
-Edit outcome: not started
-Reflection: not started
-Activity mode: not started
+Activity and evidence: brief evidence-based recap, not hands-on practice (the learner delegated the build and was not present). Evidence: spec.md "Decisions and Open Issues" (submission-rate uncertainty, 5 points, 0.24 to 0.53) resolved by the 150-point calibration; the day-one ranking revision pinned by the projectedRegistrants tests
+Route and stops: reference route in the map, not toured together: app.js #pfDone handler, rank.js rankAll/odds/ineligibility, app.js render/rowHtml/openDetail
+Edit outcome: not applicable (no learner session)
+Reflection: not offered (no learner session); the transfer question is left for Leandro
+Activity mode: recap. Map: devpost/app-map.html, generated against commit 8dc153c, checked offline with scripts disabled (no network requests, all anchors present in the source)
 
 ## Revisions
 

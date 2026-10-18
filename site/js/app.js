@@ -315,7 +315,8 @@ async function boot() {
   $('#sortSel').onchange = (e) => { sort = e.target.value; render(true); };
   $('#topCal').onclick = () => download('winnable-top5.ics', buildIcs(ranked.eligible.filter((r) => r.oneIn).slice(0, 5)));
   save(VKEY, new Date().toISOString());
-  if (!hasProfile()) setTimeout(openAbout, 600);
+  // first visit: offer the profile, unless the visitor already opened a panel or answered
+  if (!hasProfile()) setTimeout(() => !hasProfile() && $('#panel').hidden && openAbout(), 600);
   else loadGithub();
 }
 boot();

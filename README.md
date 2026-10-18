@@ -2,7 +2,9 @@
 
 **Open hackathons, ranked by your odds of winning cash.**
 
-Devpost lists every hackathon by prize or deadline. The biggest prize is rarely the best bet: on 14 October 2026 Amazon's hackathon, USD 128,000 in cash and 55,000 registrants, worked out at about 1 in 900 for an average entry. An AWS hackathon open to the same people, USD 40,000 and 900 registrants, was 1 in 65. Winnable reads every open Devpost hackathon each day, works out how many people will really submit, counts only cash, checks whether you may enter at all, and ranks what is left by your odds.
+**Try it:** [winnable.lcatarci.workers.dev](https://winnable.lcatarci.workers.dev)
+
+Devpost lists every hackathon by prize or deadline. The biggest prize is rarely the best bet: on 18 October 2026 Amazon's hackathon, USD 128,000 in cash and 56,786 registrants, worked out at 1 in 857 for an average entry. An AWS hackathon open to the same people, USD 40,000 and 939 registrants, was 1 in 61. Winnable reads every open Devpost hackathon each day, works out how many people will really submit, counts only cash, checks whether you may enter at all, and ranks what is left by your odds.
 
 ![The Winnable board](docs/img/board.png)
 
