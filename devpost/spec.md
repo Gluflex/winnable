@@ -132,4 +132,4 @@ winnable/
 ## Decisions and Open Issues
 - All choices above were made by the agent under Leandro's delegation (14.10.2026); none are attributed to him.
 - Genuine uncertainty investigated during planning: whether submission rates are stable enough to predict. Evidence so far: five finished hackathons gave rates of 0.24 to 0.53 (14.10.2026). The build fits the model on a larger sample and shows the scatter, so the spread is visible rather than hidden.
-- Open: whether GitHub's runners can fetch Devpost pages with curl (check in slice 1 of the workflow).
+- Resolved 18.10.2026: GitHub's runners can fetch Devpost pages with curl. The first manual run of the daily workflow collected every open hackathon, passed the ranking tests and committed fresh data (Actions run 39152070171).
