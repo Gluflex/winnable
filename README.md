@@ -48,10 +48,14 @@ Every entry counts the same: skill, team and fit are not modelled, so the odds d
 ```
 python collector/collect.py          # first run about 20 minutes (calibration), later runs about 3
 python -m http.server 8080           # then open http://localhost:8080/site/
-node tests/test_rank.mjs && node tests/test_ics_github.mjs
+node tests/test_rank.mjs && node tests/test_ics_github.mjs && node tests/test_worker.mjs
 ```
 
 Needs Python 3.12 and curl (Devpost refuses Python's own HTTP client). No dependencies, no build step.
+
+## Deploy
+
+The live board is a Cloudflare Worker with static assets (`wrangler.jsonc`). Copy `index.html`, `site/` and `data/hackathons.json` into `dist/`, then run `npx wrangler deploy`. The Worker (`worker/index.js`) serves the data file straight from this repository, so the daily GitHub Action keeps the live board current without a redeploy; if the repository cannot be reached, the copy deployed in `dist/` is served.
 
 ## Built with AI
 

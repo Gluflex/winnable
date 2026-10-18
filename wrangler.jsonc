@@ -1,0 +1,12 @@
+// Live board: static files from dist/ (index.html, site/, data/), plus worker/index.js for the data file.
+// Build dist/ and deploy:  see README, "Deploy".
+{
+  "name": "winnable",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/data/*"]
+  }
+}

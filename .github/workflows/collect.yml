@@ -24,7 +24,7 @@ jobs:
       - name: Collect
         run: python collector/collect.py
       - name: Test ranking against fresh data
-        run: node tests/test_rank.mjs && node tests/test_ics_github.mjs
+        run: node tests/test_rank.mjs && node tests/test_ics_github.mjs && node tests/test_worker.mjs
       - name: Commit data if it changed
         run: |
           git config user.name "winnable-bot"
