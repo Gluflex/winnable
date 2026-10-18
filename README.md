@@ -2,7 +2,7 @@
 
 **Open hackathons, ranked by your odds of winning cash.**
 
-**Try it:** [winnable.lcatarci.workers.dev](https://winnable.lcatarci.workers.dev)
+**Try it:** [winnable.lcatarci.workers.dev](https://winnable.lcatarci.workers.dev) · **Demo video:** [youtu.be/jiBg3k5afo8](https://youtu.be/jiBg3k5afo8) · **Devpost:** [devpost.com/software/winnable](https://devpost.com/software/winnable)
 
 Devpost lists every hackathon by prize or deadline, but the prize says nothing about your chances. On 18 October 2026 Amazon's hackathon paid USD 128,000 in cash to a field of 56,798 registrants: 1 in 857 for an average entry. Meta's VR competition, open to the same people, paid USD 1,000,000 in cash across 20 prizes to 3,385 registrants: 1 in 64. Eight times the prize, thirteen times the odds; the field decides. Winnable reads every open Devpost hackathon each day, works out how many people will really submit, counts only cash, checks whether you may enter at all, and ranks what is left by your odds.
 
